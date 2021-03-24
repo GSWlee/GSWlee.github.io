@@ -354,7 +354,8 @@
 
       
         
-          <h1 id="2019-BIG-DATA-Progress-based-Container-Scheduling-for-Short-lived-Applications-in-a-Kubernetes-Cluster"><a href="#2019-BIG-DATA-Progress-based-Container-Scheduling-for-Short-lived-Applications-in-a-Kubernetes-Cluster" class="headerlink" title="[2019 BIG DATA]Progress-based Container Scheduling for Short-lived Applications in a Kubernetes Cluster"></a>[2019 BIG DATA]Progress-based Container Scheduling for Short-lived Applications in a Kubernetes Cluster</h1><p>​      本文主要介绍了一种基于集群节点内部资源竞争强度的调度策略，该调度策略减少了减少批处理任务的运行时间。该方法主要针对对于Short-lived Applications(即有着较短生命周期的任务，通常为计算密集型任务，例如map-reduce，神经网络上的训练等等)。在之前的调度算法中，调度器通常只会考虑节点当前的状态，，包括节点的目前的资源利用率，节点上容器的数量等等，本文的算法中，调度起不再只考虑目前的节点上的资源利用情况，也考虑节点未来短期的资源利用情况。</p>
+          <h1 id="2019-BIG-DATA-Progress-based-Container-Scheduling-for-Short-lived-Applications-in-a-Kubernetes-Cluster"><a href="#2019-BIG-DATA-Progress-based-Container-Scheduling-for-Short-lived-Applications-in-a-Kubernetes-Cluster" class="headerlink" title="[2019 BIG DATA]Progress-based Container Scheduling for Short-lived Applications in a Kubernetes Cluster"></a>[2019 BIG DATA]Progress-based Container Scheduling for Short-lived Applications in a Kubernetes Cluster</h1><p><br></p>
+<p>本文主要介绍了一种基于集群节点内部资源竞争强度的调度策略，该调度策略减少了减少批处理任务的运行时间。该方法主要针对对于Short-lived Applications(即有着较短生命周期的任务，通常为计算密集型任务，例如map-reduce，神经网络上的训练等等)。在之前的调度算法中，调度器通常只会考虑节点当前的状态，，包括节点的目前的资源利用率，节点上容器的数量等等，本文的算法中，调度起不再只考虑目前的节点上的资源利用情况，也考虑节点未来短期的资源利用情况。</p>
 <h3 id="主要工作："><a href="#主要工作：" class="headerlink" title="主要工作："></a><strong>主要工作：</strong></h3><ul>
 <li>提出了竞争率这个概念，用于衡量单个节点内的资源竞争强度</li>
 <li>提出了ProCon,通过ProCon可以监视运行时容器的进度并且预计完成时间。通过这些收集到的数据，计算每个节点的竞争率，给调度器的调度决策做参考</li>
