@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="调度策略,Deadline,成本控制,微服务," />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="[2020 TPDS] Elastic Scheduling for Microservice Applications in Clouds 本文主要介绍了一种针对微服务场景下的容器云调度策略。主要是针对多工作流任务在异构集群上进行调度，其目的是在保证工作流在deadline之前完成的情况下尽可能的减少服务器的租凭成本。这篇论文比较精彩的地方就是对于微服务场景下的问题建模，模型很贴合容器云与微服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="容器云调度论文笔记(二)">
+<meta property="og:url" content="http://example.com/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/index.html">
+<meta property="og:site_name" content="GSWlee&#39;s blog">
+<meta property="og:description" content="[2020 TPDS] Elastic Scheduling for Microservice Applications in Clouds 本文主要介绍了一种针对微服务场景下的容器云调度策略。主要是针对多工作流任务在异构集群上进行调度，其目的是在保证工作流在deadline之前完成的情况下尽可能的减少服务器的租凭成本。这篇论文比较精彩的地方就是对于微服务场景下的问题建模，模型很贴合容器云与微服务">
+<meta property="og:locale">
+<meta property="og:image" content="http://example.com/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/model.png">
+<meta property="og:image" content="http://example.com/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/lizhikai/study/blog/source/_drafts/容器云调度论文笔记-二/param.png">
+<meta property="og:image" content="http://example.com/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/a1.png">
+<meta property="article:published_time" content="2021-03-31T15:57:13.000Z">
+<meta property="article:modified_time" content="2021-03-31T15:57:13.225Z">
+<meta property="article:author" content="GSWlee">
+<meta property="article:tag" content="调度策略">
+<meta property="article:tag" content="Deadline">
+<meta property="article:tag" content="成本控制">
+<meta property="article:tag" content="微服务">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/model.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://example.com/2021/03/31/容器云调度论文笔记-二/"/>
+
+
+
+
+
+  <title>容器云调度论文笔记(二) | GSWlee's blog</title>
+  
+
+
+
+
+
+
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">GSWlee's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GSWlee's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">容器云调度论文笔记(二)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-31T23:57:13+08:00">
+                2021-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">论文笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="2020-TPDS-Elastic-Scheduling-for-Microservice-Applications-in-Clouds"><a href="#2020-TPDS-Elastic-Scheduling-for-Microservice-Applications-in-Clouds" class="headerlink" title="[2020 TPDS] Elastic Scheduling for Microservice Applications in Clouds"></a>[2020 TPDS] Elastic Scheduling for Microservice Applications in Clouds</h1><p><br></p>
+<p>本文主要介绍了一种针对微服务场景下的容器云调度策略。主要是针对多工作流任务在异构集群上进行调度，其目的是在保证工作流在deadline之前完成的情况下尽可能的减少服务器的租凭成本。这篇论文比较精彩的地方就是对于微服务场景下的问题建模，模型很贴合容器云与微服务的场景。本文考虑了在容器云场景下的两成调度问题(task到容器，容器映射到虚拟机),将容器与任务解耦，不是简单的将任务与解决它的容器打包进行调度。</p>
+<h3 id="本文的主要工作："><a href="#本文的主要工作：" class="headerlink" title="本文的主要工作："></a>本文的主要工作：</h3><ul>
+<li>针对容器云在微服务场景下的任务调度进行建模</li>
+<li>基于统计信息，提出了一种容器所用的资源配置策略</li>
+<li>提出了一种基于任务紧急程度的调度策略</li>
+<li>提出了一种容器与虚拟机水平扩展的策略</li>
+</ul>
+<span id="more"></span>
+<h3 id="主要解决问题"><a href="#主要解决问题" class="headerlink" title="主要解决问题"></a>主要解决问题</h3><p>​    在传统的云计算的领域中，任务的分发是直接分发给虚拟机执行。通常指用考虑任务到虚拟机的映射关系以及虚拟机的扩展问题。但是，在容器云的场景下，任务是直接分发给容器来执行，而容器是部署在虚拟机上，因此存在任务到容器，容器到虚拟机的来那个两层映射，在任务分发与扩缩容场景下考虑的问题都更加复杂 。因此我们在进行容器的扩缩容的时候要考虑新建的容器应该部署到那台虚拟机上，是否需要添加新的虚拟机，添加新的虚拟机的资源大小…</p>
+<p>​    在微服务的场景下，一个完整的应用被解耦成多个独立的微服务组件，每个不同的组件都用于处理不同的工作。这种特性很适用于容器云的场景，因为我们可以将单个微服务组件部署到一个独立的容器中，利用容器的隔离型，我们实现了不同组件之间的解耦，但又可以用过网络以达到不同组件之间通信的目的。但是给容器分配的资源大小影响该容器的执行速度，因此如何在保证微服务组件性能的前提下给容器分配合适的资源是一个问题。</p>
+<p>​    在现实的场景中，我们将微服务应用部署到容器云平台后，容器云平台不可能同一时间只处理单一用户提交的任务（工作流），因此在保证多个工作流的调度公平又是一个问题。</p>
+<p>​    基于以上问题，本文提出了ESMS。</p>
+<h3 id="问题建模"><a href="#问题建模" class="headerlink" title="问题建模"></a>问题建模</h3><p>​    本文将用户对于应用的请求当成一个工作流，将该请求让各个微服务组件承担的工作作为该工作流中的任务，将各个任务之间的数据传递作为任务之间的依赖关系，这样就把一个微服务场景下的用户请求建模成了一个DAG工作流。将微服务中的各个微服务组件部署到不同的容器中，每个不同的容器只能执行特定的任务并且在单一时刻只能执行一个任务。把该请求的响应时间理解成一个Deadline，再把容器部署到底层是虚拟机的集群中。因此，我们就把微服务场景下的调度问题建模成了一个在多工作流的场景下，尽可能的减少租凭虚拟机的成本同时以保证各个工作流都能在deadline之前完成。</p>
+<p><img src="/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/model.png" style="zoom: 33%;"></p>
+<p>​    上图是整个ESMS的系统结构，其主要分为三部分，Configuration Solving，UWS，Auto-scaling。首先系统先从请求队列中获取工作流，将该工作流的信息输入给Configuration Solving，Configuration Solving通过分析这些数据判断每种ms(微服务组件)需要的资源配置(CE)，UWS接收到CE后进一步计算工作流中的每个任务的Deadline。Urgency Calculation再以子任务的Deadline为基础，计算每个子任务的调度紧急程度。Task Mapping再根据任务的紧急程度任务进行调度，生成任务与处理该任务的微服务组件(容器)的映射关系M<em>(执行相同的微服务组件可能不止一个)</em>。Auto-scaling则是在需要建立新的容器是，维护一个容器到虚拟机之间的映射关系N。ESMS在将M，N这两个具体映射关系交给具体的容器云平台(K8s)进行执行。</p>
+<p>​    下图是算法中主要的参数信息。</p>
+<p><img src="/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/lizhikai/study/blog/source/_drafts/容器云调度论文笔记-二/param.png" style="zoom:25%;"></p>
+<p>​    <strong>多工作流合并：</strong>添加一个总的<script type="math/tex">task_{entry}</script> 与<script type="math/tex">task_{end}</script>与各个工作流的入口与出口任务相连接，相当于合并了工作流。</p>
+<h3 id="Configuration-Solving"><a href="#Configuration-Solving" class="headerlink" title="Configuration Solving"></a>Configuration Solving</h3><p>​    该组件主要是基于工作流的信息来生成微服务组件的资源配置。总体分为四个步骤：</p>
+<ol>
+<li><p>按每个微服务组件分配一个单位的资源来生成初始化的资源配置</p>
+</li>
+<li><p>通过目前的资源配置计算目前工作流完成的时间：</p>
+<script type="math/tex; mode=display">EFT(t_i,m_{j,k},T)=EST(t_i,ms_{j,k},T)+ET(t_i,ms_{j,k})\\makespan_l(CE)=\underset{t_i\in WF_1}{max}\{t_i,ms_{j,k},T\}</script><p>其中EFT为预计完成时间，EST为预计开始时间，ET为预计执行时间。EST有task的前驱任务的完成时间与他们之间的数据传输延迟决定。</p>
+</li>
+<li><p>如果预计完成时间超过deadline，这对于每种微服务组件，增加一个单位的的资源分配，重新计算预计完成时间，与<script type="math/tex">gain_j</script></p>
+<script type="math/tex; mode=display">gain_j=\begin{cases}makespan(CE)-makespan(CE_j)&if\quad cost(CE)==cose(CE_j)\\cost(CE)-cost(CE_j)&if\quad makespan(CE_j)<makespan(CE)\\\frac{makespan(CE)-makespan(CE_j)}{cost(CE)-cost(CE_j)}&otherwise\end{cases}</script><p>gain表示修改微服务组件J所带来的提升，然后比较所有更新不同组件带来的提升，选择提升最大的组件进行配置更新，更新配置文件CE重新进入步骤2</p>
+</li>
+<li><p>如果预计完成时间在deadline之前，则终止迭代，生成最终的配置文件</p>
+</li>
+</ol>
+<h3 id="URGENCY-BASED-WORKFLOW-SCHEDULING"><a href="#URGENCY-BASED-WORKFLOW-SCHEDULING" class="headerlink" title="URGENCY-BASED WORKFLOW SCHEDULING"></a>URGENCY-BASED WORKFLOW SCHEDULING</h3><p>​    该组件主要负责生成任务与微服务组件的映射</p>
+<h4 id="Deadline-Distribution"><a href="#Deadline-Distribution" class="headerlink" title="Deadline Distribution"></a>Deadline Distribution</h4><p>​    主要负责计算工作流中的各个任务的截止时间。</p>
+<p>​    <script type="math/tex">sd_i=D_l*\frac{rank(task_{entry})-rank(task_i)+ET(task_i,ms^*_j)}{rank(task_{entry})}\\rank(task_i)=ET(
+task_i,ms^*_j)+\underset{task_p\in succ(task_i)}{max}\{TT(e_{i,p})+rank(task_p)\}</script></p>
+<p>​     其中sd为子任务的deadline，<script type="math/tex">rank(t)</script>表示从任务t开始到整个工作流结束需要多少时间，TT为将taski计算出的数据传输到taskp所需的时间，因此，上述公式可以把sd理解为从工作流开始到该任务执行完的时间占整个工作流执行时间的比值乘上总的deadline。</p>
+<h4 id="Task-Ordering"><a href="#Task-Ordering" class="headerlink" title="Task Ordering"></a>Task Ordering</h4><p>​    在此部分，主要用于计算待调度任务的调度顺序。主要是计算该任务的紧急程度来计算。</p>
+<p>​    $u_i=\frac{sd_i-XFT(t_i)}{hop(t_i)}$</p>
+<p>其中XFT为任务的最快完成时间，计算公式为<script type="math/tex">XFT(t_i)=\underset{ms_{i,j\in MS(t_i)}}{min}{EFT(t_i,ms_{i,j},T)}</script>。EFT为预计完成时间，就是说XFT就是该任务在当前能运行该任务最快的组件上的运行完成的时间，所以sd与XFT的差值越小，u越小，说明任务紧急程度越高。hop为以t为开始到工作流的出口任务之间的关键路径上未进行调度的任务数。hop越大，说明t发生超时影响越大。因此hop越大，u越小，说明任务紧急程度越高。</p>
+<p>​    因此调度器能够通过比较不同任务的u值来进行调度优先级排序。</p>
+<h4 id="Task-Mapping"><a href="#Task-Mapping" class="headerlink" title="Task Mapping"></a>Task Mapping</h4><p><img src="/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/a1.png" style="zoom: 33%;"></p>
+<p>​    上述则为调度任务到容器上的算法。1-4行为之前的所属的准备工作，具体的任务调度算法有四个要点：</p>
+<ol>
+<li>如果存在一个微服务组件能够在sub-deadline前完成任务，则调度到成本最小的组件上；</li>
+<li>如果需要新建一个组件，则新建它；</li>
+<li>如果该任务预计超过deadline，则新建一个新的特殊的组件；</li>
+<li>如果一个虚拟机存在待新建容器(微服务组件的镜像)，则优先选择该机器。</li>
+</ol>
+<p>具体的步骤为：6-9行，计算该任务在每个能运行该组件的容器下的laxity，<script type="math/tex">Laxity(t_i)=sd_i-EFT(t_i,ms_{i,j},T)</script>。如果存在laxity存在正值，则选择将任务分配后最小的cost增加的组件进行部署(10-12)。如果laxity全为负数，必会发生延时，因此要计算保证该任务在deadline前完成的所需最小的速度。会出现一下情况(13-26)：</p>
+<ul>
+<li>如果最小的速度为负(说明已经超时)或者最小速度大于集群能提供的最大速度，则分别计算在目前有的能运行该task的组件上运行的最快的EFT与以集群最大速度为目标新建一个新的组件实例运行的EFT。比较两个EFT的大小，选择较小的那个进行部署。(由于以最大速度运行组件的EFT要算上新建初始化时间，可能导致运行时间比前者低)</li>
+<li>如果最小的速度小于集群单机的最大速度并且大于按CE中的配置生成组件的运行速度，则按照该最小速度所需的资源新建容器进行部署。</li>
+<li>如果最小速度小于按CE中的配置生成组件的运行速度(通常为目前没有容器能够运行该任务)，则按照CE中的配置新建一个容器进行部署</li>
+</ul>
+<p>通过上述策略，我们可以生成一个任务与容器的映射M(33行)，其他行设及扩容策略，将在下节讨论。</p>
+<h3 id="AUTO-SCALING-ON-CONTAINERS-AND-VMS"><a href="#AUTO-SCALING-ON-CONTAINERS-AND-VMS" class="headerlink" title="AUTO-SCALING ON CONTAINERS AND VMS"></a>AUTO-SCALING ON CONTAINERS AND VMS</h3><p>​    在扩容策略中，我们主要考虑的两个要点就是，通过在拥有容器所需的镜像的虚拟机上新建减少初始化时间以及采用first fit decrease进行虚拟机与容器的扩容</p>
+<ol>
+<li><p>微服务组件的初始化时间由一下公式决定：</p>
+<script type="math/tex; mode=display">IT(ms_{i,j})=\begin{cases}0&ms_{i,j}正在运行\\IT(c_{i,j})&有镜像\\IT(c_{i,j})+PT(c_{i,j})&有虚拟机但没有镜像\\IT(c_{i,j})+IT(v_x)+PT(c_{i,j})&没有虚拟机\end{cases}</script><p>借此我们判断，在拥有景象的虚拟机上给你部署能节省初始化时间。</p>
+</li>
+<li><p>first fit decrease：</p>
+<p>就是将虚拟机和待新建的容器按所用资源从大到小排序，在将资源依次尝试填虚拟机中，找到第一个能填入的虚拟机，则确定将该容器填入虚拟机中。具体算法细节可以<a target="_blank" rel="noopener" href="https://www.docin.com/p-1991596686.html">参考</a></p>
+</li>
+</ol>
+<p>因此，具体的扩容策略如下：</p>
+<ol>
+<li>如果存在拥有待部署的镜像的虚拟机且该虚拟机能够满足容器的资源需求，这将容器部署到虚拟机上。</li>
+<li>将所有容器按照资源升序排列，按照BF(best fit,虚拟机剩余资源与容器所需资源最匹配)原则进行部署。</li>
+<li>将剩余没有部署的容器按照first fit decrease的策略进行虚拟机的扩容与容器部署。</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5/" rel="tag"># 调度策略</a>
+          
+            <a href="/tags/Deadline/" rel="tag"># Deadline</a>
+          
+            <a href="/tags/%E6%88%90%E6%9C%AC%E6%8E%A7%E5%88%B6/" rel="tag"># 成本控制</a>
+          
+            <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/" rel="tag"># 微服务</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/" rel="next" title="容器云调度论文笔记(一)">
+                <i class="fa fa-chevron-left"></i> 容器云调度论文笔记(一)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+    <div id="gitalk-container"></div>
+    
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name"></p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                <a href="/categories/index.html">
+                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-name">分类</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">标签</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/GSWlee" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2020-TPDS-Elastic-Scheduling-for-Microservice-Applications-in-Clouds"><span class="nav-number">1.</span> <span class="nav-text">[2020 TPDS] Elastic Scheduling for Microservice Applications in Clouds</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%AC%E6%96%87%E7%9A%84%E4%B8%BB%E8%A6%81%E5%B7%A5%E4%BD%9C%EF%BC%9A"><span class="nav-number">1.0.1.</span> <span class="nav-text">本文的主要工作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.2.</span> <span class="nav-text">主要解决问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%BB%BA%E6%A8%A1"><span class="nav-number">1.0.3.</span> <span class="nav-text">问题建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Configuration-Solving"><span class="nav-number">1.0.4.</span> <span class="nav-text">Configuration Solving</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#URGENCY-BASED-WORKFLOW-SCHEDULING"><span class="nav-number">1.0.5.</span> <span class="nav-text">URGENCY-BASED WORKFLOW SCHEDULING</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Deadline-Distribution"><span class="nav-number">1.0.5.1.</span> <span class="nav-text">Deadline Distribution</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Task-Ordering"><span class="nav-number">1.0.5.2.</span> <span class="nav-text">Task Ordering</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Task-Mapping"><span class="nav-number">1.0.5.3.</span> <span class="nav-text">Task Mapping</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AUTO-SCALING-ON-CONTAINERS-AND-VMS"><span class="nav-number">1.0.6.</span> <span class="nav-text">AUTO-SCALING ON CONTAINERS AND VMS</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">GSWlee</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+  
+  <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+   <script type="text/javascript">
+		var gitalk = new Gitalk({
+		  clientID: 'a3c1062ba940bdf3b57e',
+		  clientSecret: '17bca448085463fdc0d25275529cdba857b617c5',
+		  repo: 'gswlee.github.io',
+		  owner: 'gswlee',
+		  admin: ['gswlee'], 
+		  id: location.pathname,
+		  distractionFreeMode: 'true'
+		})
+		gitalk.render('gitalk-container')           
+       </script>
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
