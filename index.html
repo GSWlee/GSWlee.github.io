@@ -251,6 +251,154 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/02/%E5%8A%A8%E6%89%8B%E5%86%99%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E5%BF%83%E5%BE%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GSWlee's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/02/%E5%8A%A8%E6%89%8B%E5%86%99%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E5%BF%83%E5%BE%97/" itemprop="url">动手写分布式缓存心得</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-04-02T16:01:44+08:00">
+                2021-04-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AE%9E%E8%B7%B5%E5%BF%83%E5%BE%97/" itemprop="url" rel="index">
+                    <span itemprop="name">实践心得</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <p>​        由于磁盘的io处理较慢，因此为了减少这种I/O带来的开销，我们将部分数据存储在读取较快的设备中，例如PC上的内存，浏览器中的本地缓存，大型web服务中的redis等等。而分布式缓存则是这种机制的分布式形式，可以解决单机处理不了的缓存工作。但是，当缓存采用分布式模式的情况下，我们要解决的问题就不仅仅是传统缓存中的如何删除旧数据，还有一些跟分布式相关的问题，例如当多个写操作发生时如何保证不发生写冲突；当数据库中的数据发生改变时，如何实时更新各个分布式节点上的缓存数据；当缓存节点更新后，什么时候进行写回…</p>
+<p>​    &lt;/br&gt;</p>
+<p>​        本文记录一下自己跟着<a target="_blank" rel="noopener" href="https://geektutu.com/post/geecache.html">教程</a>用go实现一个分布式缓存的过程中遇见的问题与以及在实践中对于分布式缓存的心得。</p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2021/04/02/%E5%8A%A8%E6%89%8B%E5%86%99%E5%88%86%E5%B8%83%E5%BC%8F%E7%BC%93%E5%AD%98%E5%BF%83%E5%BE%97/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -590,7 +738,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -601,7 +749,7 @@
               
               <div class="site-state-item site-state-categories">
                 <a href="/categories/index.html">
-                  <span class="site-state-item-count">1</span>
+                  <span class="site-state-item-count">2</span>
                   <span class="site-state-item-name">分类</span>
                 </a>
               </div>
@@ -612,7 +760,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>
