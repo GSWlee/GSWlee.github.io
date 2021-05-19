@@ -251,6 +251,157 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GSWlee's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/" itemprop="url">论文笔记(四)</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-19T16:13:32+08:00">
+                2021-05-19
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" itemprop="url" rel="index">
+                    <span itemprop="name">论文笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          <h1 id="2019-CLOUD-Horizontal-and-Vertical-Scaling-of-Container-based-Applications-using-Reinforcement-Learning"><a href="#2019-CLOUD-Horizontal-and-Vertical-Scaling-of-Container-based-Applications-using-Reinforcement-Learning" class="headerlink" title="[2019 CLOUD] Horizontal and Vertical Scaling of Container-based Applications using Reinforcement Learning"></a>[2019 CLOUD] Horizontal and Vertical Scaling of Container-based Applications using Reinforcement Learning</h1><p>本文主要介绍了一种基于强化学习的容器云平台的自动扩展策略。通过此策略，可以实现容器运行时的资源扩展，包括水平扩展与垂直扩展的两个方面。在auto-scaling这方面，目前主要的扩容算法都是基于阈值的算法，传统非基于强化学习的扩容阈值需要用户手动设置，但是用户设置的阈值可能并不精确，并且也增加了用户的工作量。基于强化学习的自动扩容算法主要是通过学习数据，不断地优化调度器在不同状态的决策，从而达到生成最优调度器的方案。但是基于强化学习的方法也分为两种，一种是以Q-learning为代表的model-free的算法，一种就是类似于本文所提出的model-based算法。前者由于没有任何先验的函数与模型，所以相比于后者往往收敛较慢。</p>
+<h3 id="主要工作"><a href="#主要工作" class="headerlink" title="主要工作"></a><strong>主要工作</strong></h3><ul>
+<li>提出了一种基于model-based的强化学习算法用于决定容器云的扩缩容策略</li>
+<li>将提出的算法部署与docker Swarm中，建立了一个可以自动扩缩容Docker Swarm集群</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/8814555">论文链接</a></p>
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/23/%E5%8A%A8%E6%89%8B%E5%86%99ORM%E6%A1%86%E6%9E%B6%E5%BF%83%E5%BE%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1044,7 +1195,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-count">6</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1066,7 +1217,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">13</span>
                   <span class="site-state-item-name">标签</span>
                 </a>
               </div>

@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="调度策略,运行时间,资源竞争," />
+  <meta name="keywords" content="垂直扩展,水平扩展,强化学习," />
 
 
 
@@ -79,25 +79,24 @@
 
 
 
-<meta name="description" content="[2019 BIG DATA]Progress-based Container Scheduling for Short-lived Applications in a Kubernetes Cluster 本文主要介绍了一种基于集群节点内部资源竞争强度的调度策略，该调度策略减少了减少批处理任务的运行时间。该方法主要针对对于Short-lived Applications(即有着较短生命周期的任务">
+<meta name="description" content="[2019 CLOUD] Horizontal and Vertical Scaling of Container-based Applications using Reinforcement Learning本文主要介绍了一种基于强化学习的容器云平台的自动扩展策略。通过此策略，可以实现容器运行时的资源扩展，包括水平扩展与垂直扩展的两个方面。在auto-scaling这方面，目前主要的扩容算法都是">
 <meta property="og:type" content="article">
-<meta property="og:title" content="容器云调度论文笔记(一)">
-<meta property="og:url" content="http://example.com/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/index.html">
+<meta property="og:title" content="论文笔记(四)">
+<meta property="og:url" content="http://example.com/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/index.html">
 <meta property="og:site_name" content="GSWlee&#39;s blog">
-<meta property="og:description" content="[2019 BIG DATA]Progress-based Container Scheduling for Short-lived Applications in a Kubernetes Cluster 本文主要介绍了一种基于集群节点内部资源竞争强度的调度策略，该调度策略减少了减少批处理任务的运行时间。该方法主要针对对于Short-lived Applications(即有着较短生命周期的任务">
+<meta property="og:description" content="[2019 CLOUD] Horizontal and Vertical Scaling of Container-based Applications using Reinforcement Learning本文主要介绍了一种基于强化学习的容器云平台的自动扩展策略。通过此策略，可以实现容器运行时的资源扩展，包括水平扩展与垂直扩展的两个方面。在auto-scaling这方面，目前主要的扩容算法都是">
 <meta property="og:locale">
-<meta property="og:image" content="http://example.com/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/a.png">
-<meta property="og:image" content="http://example.com/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/b.png">
-<meta property="og:image" content="http://example.com/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/c.png">
-<meta property="og:image" content="http://example.com/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/d.png">
-<meta property="article:published_time" content="2021-03-24T12:01:14.000Z">
-<meta property="article:modified_time" content="2021-03-24T12:06:02.454Z">
+<meta property="og:image" content="http://example.com/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/Qfunction.png">
+<meta property="og:image" content="http://example.com/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/P.png">
+<meta property="og:image" content="http://example.com/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/struct.png">
+<meta property="article:published_time" content="2021-05-19T08:13:32.000Z">
+<meta property="article:modified_time" content="2021-05-19T08:13:32.812Z">
 <meta property="article:author" content="GSWlee">
-<meta property="article:tag" content="调度策略">
-<meta property="article:tag" content="运行时间">
-<meta property="article:tag" content="资源竞争">
+<meta property="article:tag" content="垂直扩展">
+<meta property="article:tag" content="水平扩展">
+<meta property="article:tag" content="强化学习">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://example.com/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/a.png">
+<meta name="twitter:image" content="http://example.com/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/Qfunction.png">
 
 
 
@@ -127,13 +126,13 @@
 
 
 
-  <link rel="canonical" href="http://example.com/2021/03/24/容器云调度论文笔记-一/"/>
+  <link rel="canonical" href="http://example.com/2021/05/19/论文笔记-四/"/>
 
 
 
 
 
-  <title>容器云调度论文笔记(一) | GSWlee's blog</title>
+  <title>论文笔记(四) | GSWlee's blog</title>
   
 
 
@@ -260,7 +259,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="">
@@ -277,7 +276,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">容器云调度论文笔记(一)</h1>
+          <h1 class="post-title" itemprop="name headline">论文笔记(四)</h1>
         
 
         <div class="post-meta">
@@ -289,8 +288,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-03-24T20:01:14+08:00">
-                2021-03-24
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-05-19T16:13:32+08:00">
+                2021-05-19
               </time>
             
 
@@ -349,37 +348,78 @@
       
 
       
-        <h1 id="2019-BIG-DATA-Progress-based-Container-Scheduling-for-Short-lived-Applications-in-a-Kubernetes-Cluster"><a href="#2019-BIG-DATA-Progress-based-Container-Scheduling-for-Short-lived-Applications-in-a-Kubernetes-Cluster" class="headerlink" title="[2019 BIG DATA]Progress-based Container Scheduling for Short-lived Applications in a Kubernetes Cluster"></a>[2019 BIG DATA]Progress-based Container Scheduling for Short-lived Applications in a Kubernetes Cluster</h1><p><br></p>
-<p>本文主要介绍了一种基于集群节点内部资源竞争强度的调度策略，该调度策略减少了减少批处理任务的运行时间。该方法主要针对对于Short-lived Applications(即有着较短生命周期的任务，通常为计算密集型任务，例如map-reduce，神经网络上的训练等等)。在之前的调度算法中，调度器通常只会考虑节点当前的状态，，包括节点的目前的资源利用率，节点上容器的数量等等，本文的算法中，调度起不再只考虑目前的节点上的资源利用情况，也考虑节点未来短期的资源利用情况。</p>
-<h3 id="主要工作："><a href="#主要工作：" class="headerlink" title="主要工作："></a><strong>主要工作：</strong></h3><ul>
-<li>提出了竞争率这个概念，用于衡量单个节点内的资源竞争强度</li>
-<li>提出了ProCon,通过ProCon可以监视运行时容器的进度并且预计完成时间。通过这些收集到的数据，计算每个节点的竞争率，给调度器的调度决策做参考</li>
-<li>将ProCon部署到K8s集群上，对本算法的性能进行评估</li>
+        <h1 id="2019-CLOUD-Horizontal-and-Vertical-Scaling-of-Container-based-Applications-using-Reinforcement-Learning"><a href="#2019-CLOUD-Horizontal-and-Vertical-Scaling-of-Container-based-Applications-using-Reinforcement-Learning" class="headerlink" title="[2019 CLOUD] Horizontal and Vertical Scaling of Container-based Applications using Reinforcement Learning"></a>[2019 CLOUD] Horizontal and Vertical Scaling of Container-based Applications using Reinforcement Learning</h1><p>本文主要介绍了一种基于强化学习的容器云平台的自动扩展策略。通过此策略，可以实现容器运行时的资源扩展，包括水平扩展与垂直扩展的两个方面。在auto-scaling这方面，目前主要的扩容算法都是基于阈值的算法，传统非基于强化学习的扩容阈值需要用户手动设置，但是用户设置的阈值可能并不精确，并且也增加了用户的工作量。基于强化学习的自动扩容算法主要是通过学习数据，不断地优化调度器在不同状态的决策，从而达到生成最优调度器的方案。但是基于强化学习的方法也分为两种，一种是以Q-learning为代表的model-free的算法，一种就是类似于本文所提出的model-based算法。前者由于没有任何先验的函数与模型，所以相比于后者往往收敛较慢。</p>
+<h3 id="主要工作"><a href="#主要工作" class="headerlink" title="主要工作"></a><strong>主要工作</strong></h3><ul>
+<li>提出了一种基于model-based的强化学习算法用于决定容器云的扩缩容策略</li>
+<li>将提出的算法部署与docker Swarm中，建立了一个可以自动扩缩容Docker Swarm集群</li>
 </ul>
-<p>[论文链接]<a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/9006427">https://ieeexplore.ieee.org/document/9006427</a></p>
+<p><a target="_blank" rel="noopener" href="https://ieeexplore.ieee.org/document/8814555">论文链接</a></p>
 <span id="more"></span>
-<h3 id="主要解决问题："><a href="#主要解决问题：" class="headerlink" title="主要解决问题："></a><strong>主要解决问题：</strong></h3><p>​    在K8s的默认调度策略中，是基于负载均衡的调度策略，例如在一个集群中有两个工作节点，worker1上运行一个任务，worker2上运行两个任务，当新的任务来时，调度器会默认将任务调度到worker1以实现负载均衡。咋一看很美好，但是我们将正在运行的任务考虑进去，如果worker1上的任务还要一个小时而worker2上的任务只需要2秒就能完成，在这种情况下，将任务调度到worker2明显是更明智的决定，本文主要解决的就是这个问题。</p>
-<h3 id="ProCon系统结构"><a href="#ProCon系统结构" class="headerlink" title="ProCon系统结构"></a><strong>ProCon系统结构</strong></h3><p><img src="/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/a.png" style="zoom:67%;"></p>
-<p>上图所示就是ProCon的结构，主要分为三部分组成：</p>
-<ul>
-<li>Container Monitor:部署在工作节点上，主要负责工作节点的状态，主要包括节点上的容器数量，资源利用率等等。并将这些数据存储在一个持久卷中。</li>
-<li>Log Analyst:部署在管理节点上，负责分析Container Monitor生成的每个节点的状态日志，生成调度算法所需的参数，例如竞争率等等。</li>
-<li>ProCon Scheduler:部署在管理节点上，主要负责调度任务，通过Log Analyst计算出的参数，计算每个节点的权值，选择合适的节点进行调度。</li>
+<h3 id="问题建模"><a href="#问题建模" class="headerlink" title="问题建模"></a>问题建模</h3><ul>
+<li>application:(M/D/<script type="math/tex">k_i</script>)表示应用，M表示请求数量，D表示最迟相应时间，<script type="math/tex">k_i</script>表示该应用在时间i所需要的的容器数<ul>
+<li>本模型与传统的模型不太相同，并不是研究把容器部署到集群中，而是研究容器对于请求变化的扩展策略，请求数量代表用户对于该应用的请求，相应时间代表用户提交请求到返回结果之间的等待时间。当请求变多但是应用的在容器云集群中的实例数不变时，就会造成相应时间过长但是如果请求减少但是集群中的应用实例数不变时，就会造成一定的性能浪费，本文研究的就是在相应时间与资源节约之间的一种权衡。</li>
 </ul>
-<h3 id="算法的主要内容"><a href="#算法的主要内容" class="headerlink" title="算法的主要内容"></a><strong>算法的主要内容</strong></h3><p><strong>前置条件：</strong></p>
-<p>作者通过实验证明了其他条件不变时，完成每百分之一所花费的时间是不变的。</p>
-<p><img src="/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/b.png" style="zoom:67%;"></p>
-<p><em>主要参数，其中大写字母开头可直接获得，小写字母开头可以通过计算获得</em></p>
-<p><strong>计算节点的竞争率：</strong></p>
-<p>$f(J_{id},t)=P(j_{id},n)-P(J_{id},n-1)$</p>
-<p>计算n-1%到n%的完成时间。</p>
-<script type="math/tex; mode=display">u(J_{id},t)=\frac {R(J_{id},t)}{\sum_{J_{id}\in W_i}R(J_{id},t)}</script><p>计算资源利用率，该任务用资源占该节点上所有任务资源使用的总和。</p>
-<script type="math/tex; mode=display">i(J_{id},t)=\frac{f(J_{id},t)}{u({J_{id},t})}*(MAX-P(J_{id},n))</script><p>计算任务的剩余完成时间，完成一份任务的时间/当前资源利用率*剩余份数</p>
-<p><img src="/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/c.png" style="zoom:50%;"></p>
-<p>上述算法就是计算竞争率的算法：1-2行先进行初始化，3-4行对于节点进行标记，判断资源是否完全利用。5-6行则计算该节点上运行的任务的预计完成时间。8-9行选择最长的预计完成时间作为节点的生存周期。10-13行计算未来每个时刻的资源竞争率，14-17行计算该节点生存期内节点的竞争率。节点的竞争率来自以下公式<script type="math/tex">\int_{t=0}^\infty RC(W_i,t) \,{\rm d}t</script>,但是由于我们将时间分片，所以积分就变成了求和，而<script type="math/tex">RC(W_i,t)</script>只能给出当前的数据，所以我们构造了<script type="math/tex">erc(W_i,t)</script>，通过预计运行时间来估计未来的<script type="math/tex">RC(W_i,t)</script>。</p>
-<p><strong>进行调度</strong></p>
-<p><img src="/2021/03/24/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%B8%80/d.png" style="zoom:50%;"></p>
-<p>上述算法就是进行调度的算法:1-2行先进行初始化，3-4行进行选择，将资源为被完全利用的节点添加进队列。6-9行如果存在资源为被完全群利用的节点，从其中选择竞争率最小的节点进行放置。 10-21行；如果不存在节点未被完全利用，从新计算每个节点的参数，15行中公式发生变化，计算的是假设该任务部署到改节点上的资源利用率，并且假设资源是平均分配。在从新计算每个节点的竞争率，选择最小的节点进行放置。</p>
+</li>
+<li><script type="math/tex; mode=display">s_i=(k_i,u_i,c_i)$$表示应用s在i时刻的状态
+* $$k_i$$表示在i时刻应用拥有的实例数
+* $$u_i$$表示cpu利用率，由于利用率为实数，为了方便计算将数值离散化为$$u_i\in\{0,\bar{u},...,L\bar u\}</script><ul>
+<li><script type="math/tex">c_i</script>表示分配给容器的cpu资源（<script type="math/tex">c_i</script> is the CPU share granted to each container.我也不太确定对不对)，同上一样也进行了离散化</li>
+</ul>
+</li>
+<li><script type="math/tex">Q(s,a)</script>表示评估函数，总体算法也是为了优化这个评估函数，其意义是在s状态状态下进行策略a在长期看来下的成本<ul>
+<li>a：表示扩缩容策略分5种与9种，五种：{-r,-1,0,1,+r}，分别为垂直增加或减少r的cpu占比，增加或减少一个容器副本，啥也不干，9种就是{-r,0,+r}*{-1,0,+1}</li>
+<li>扩缩容策略：由于我们核心的目的就是减少Q，因此策略就是在状态s下尝试每个a，选择Q最小的进行执行</li>
+<li>强化学习的目标：通过不断的喂数据，利用强化学习的方法对于Q进行微调，最终生成一个合适函数。</li>
+</ul>
+</li>
+</ul>
+<h3 id="Model-Based-Reinforcement-Learning"><a href="#Model-Based-Reinforcement-Learning" class="headerlink" title="Model-Based Reinforcement Learning"></a>Model-Based Reinforcement Learning</h3><p><img src="/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/Qfunction.png" alt></p>
+<p>这是本算法用的Q函数的更新函数，首先有个很重要的点，就是s与a的值是离散的，而且是有限的(由上述的定义可知)，因此,Q(s,a),就可以直接理解成s,a两个变量映射出来的值，不用理解成函数，就像下表一样</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>S</th>
+<th>A</th>
+<th>Q(S,A)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>由于本算法是基于模型的强化学习，因此在算法的一开始会有一个类似上表的Q函数，也就是SA到Q的一种映射关系，而上述公式的更新操作的本质就是通过实际值去不断调整SA对应Q值，去修正Q函数使其更加符合实际的情况。</p>
+<p>这里的Q函数时使用期望进更新，s’表示在s状态下通过进行a操作最终能达到的状态，因为在进行操作后的变成新状态的概率是随机的因此不同s‘出现的概率也是随机的P(s’|s,a)表示在s状态下经过a操作变为s’状态的概率。后面一部分就是表示后续状态的价值，有两部分组成，c(s,a,s’)表示进行操作a所要付出的代价，其它的表示后续状态能变的最小代价。在本式中，主要有两部分是未知的，一个是P(s’|s,a)，一个是c(s,a,s’)，其它参数要么是定值，要和就能够通过查表（Q函数）的出。接下来，将重点说明这两个未知参数</p>
+<ul>
+<li><img src="/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/P.png" alt><ul>
+<li>在本式中，首先将a拆分层为水平操作a1(增加/减少容器数量)，垂直操作a2(增加/减少分配给每个容器的CPU占比)，由于在s中k与c都是定值，因此，只有当s‘中的k与c满足要求时才有概率。<script type="math/tex">P[u_{i+1}=u'|u_i=u]</script>就是在<script type="math/tex">u_i</script>状态下变为<script type="math/tex">u_{i+1}</script>的概率，该概率的计算方式为<script type="math/tex">p=\frac{n_{i,u.u'}}{\sum_{l=0}^L n_{i,u,l}}</script>.其中<script type="math/tex">n_{i,a,b}</script>表示为在i时刻之前，CPU利用率从a到b变化的次数。</li>
+</ul>
+</li>
+<li>c(s,a,s’)表示进行操作a所要付出的代价。其主要可以分为三个部分：<ul>
+<li>调整代价<script type="math/tex">c_{adp}</script>,表示进行操作a进行调整的代价，主要是针对垂直的扩容，应为垂直扩容可能会造成性能应用的性能影响，调整代价就是对于此的一种惩罚。本文中设为定值</li>
+<li>资源代价<script type="math/tex">c_{res}</script>,表示当前应用使用的使用的资源的代价，本文假设该代价与应用所使用的容器实例数与分配的CPU占用率成一定的比例。基本也可以理解为确定值。</li>
+<li>性能代价<script type="math/tex">C_{pref}</script>表示应用执行超过相应时间所需要付出的代价。需要使用估计值<ul>
+<li><script type="math/tex">\hat{c}_{u,i}(s')=(1-\alpha)\hat{c}_{u,i-1}(s')+\alpha c
+_{u,i}(s')</script>其中<script type="math/tex">\hat{c}_{u,i}(s')</script>为估计值，<script type="math/tex">c
+_{u,i}(s')</script>为观测值，<script type="math/tex">\alpha</script>为学习率。每次迭代后都会根据新的观察值来修正估计值。</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="Elastic-Docker-Swarm"><a href="#Elastic-Docker-Swarm" class="headerlink" title="Elastic Docker Swarm"></a>Elastic Docker Swarm</h3><p><img src="/2021/05/19/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E5%9B%9B/struct.png" alt></p>
+<p>本图为Elastic Docker Swarm的结构图，其主要机制有4个模块：</p>
+<ul>
+<li>M，监视模块，部署在所有节点中，用于收集节点的运行状态。</li>
+<li>A，分析模块，主要是根据收集到的信息来判断是否要进行扩缩容操作</li>
+<li>P，计划模块，部署在管理节点上，当分析模块决定要进行操作时，有个该模块决定该扩缩容计划</li>
+<li>E，执行模块，收到计划模块的扩缩容计划，调用Swarm集群中对应的API接口进行执行。</li>
+</ul>
 
       
     </div>
@@ -397,11 +437,11 @@
       
         <div class="post-tags">
           
-            <a href="/tags/%E8%B0%83%E5%BA%A6%E7%AD%96%E7%95%A5/" rel="tag"># 调度策略</a>
+            <a href="/tags/%E5%9E%82%E7%9B%B4%E6%89%A9%E5%B1%95/" rel="tag"># 垂直扩展</a>
           
-            <a href="/tags/%E8%BF%90%E8%A1%8C%E6%97%B6%E9%97%B4/" rel="tag"># 运行时间</a>
+            <a href="/tags/%E6%B0%B4%E5%B9%B3%E6%89%A9%E5%B1%95/" rel="tag"># 水平扩展</a>
           
-            <a href="/tags/%E8%B5%84%E6%BA%90%E7%AB%9E%E4%BA%89/" rel="tag"># 资源竞争</a>
+            <a href="/tags/%E5%BC%BA%E5%8C%96%E5%AD%A6%E4%B9%A0/" rel="tag"># 强化学习</a>
           
         </div>
       
@@ -414,15 +454,15 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
+              <a href="/2021/04/23/%E5%8A%A8%E6%89%8B%E5%86%99ORM%E6%A1%86%E6%9E%B6%E5%BF%83%E5%BE%97/" rel="next" title="动手写ORM框架心得">
+                <i class="fa fa-chevron-left"></i> 动手写ORM框架心得
+              </a>
+            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2021/03/31/%E5%AE%B9%E5%99%A8%E4%BA%91%E8%B0%83%E5%BA%A6%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0-%E4%BA%8C/" rel="prev" title="容器云调度论文笔记(二)">
-                容器云调度论文笔记(二) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -567,7 +607,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2019-BIG-DATA-Progress-based-Container-Scheduling-for-Short-lived-Applications-in-a-Kubernetes-Cluster"><span class="nav-number">1.</span> <span class="nav-text">[2019 BIG DATA]Progress-based Container Scheduling for Short-lived Applications in a Kubernetes Cluster</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%B7%A5%E4%BD%9C%EF%BC%9A"><span class="nav-number">1.0.1.</span> <span class="nav-text">主要工作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E8%A7%A3%E5%86%B3%E9%97%AE%E9%A2%98%EF%BC%9A"><span class="nav-number">1.0.2.</span> <span class="nav-text">主要解决问题：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ProCon%E7%B3%BB%E7%BB%9F%E7%BB%93%E6%9E%84"><span class="nav-number">1.0.3.</span> <span class="nav-text">ProCon系统结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E7%9A%84%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9"><span class="nav-number">1.0.4.</span> <span class="nav-text">算法的主要内容</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#2019-CLOUD-Horizontal-and-Vertical-Scaling-of-Container-based-Applications-using-Reinforcement-Learning"><span class="nav-number">1.</span> <span class="nav-text">[2019 CLOUD] Horizontal and Vertical Scaling of Container-based Applications using Reinforcement Learning</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BB%E8%A6%81%E5%B7%A5%E4%BD%9C"><span class="nav-number">1.0.1.</span> <span class="nav-text">主要工作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E5%BB%BA%E6%A8%A1"><span class="nav-number">1.0.2.</span> <span class="nav-text">问题建模</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Model-Based-Reinforcement-Learning"><span class="nav-number">1.0.3.</span> <span class="nav-text">Model-Based Reinforcement Learning</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Elastic-Docker-Swarm"><span class="nav-number">1.0.4.</span> <span class="nav-text">Elastic Docker Swarm</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
